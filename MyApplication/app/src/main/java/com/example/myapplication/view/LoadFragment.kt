@@ -15,18 +15,21 @@ class LoadFragment : ViewBindingFragment<FragmentLoadBinding>(FragmentLoadBindin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViewModel()
-        mainViewModel.getResponse()
+        if (mainViewModel.getLaunchCounter() == 0) {
+            mainViewModel.getResponse()
+        } else {
+            moveToWeb(1)
+        }
     }
 
     private fun bindViewModel() {
-        mainViewModel.remoteDataLD.observe(viewLifecycleOwner){
+        mainViewModel.remoteDataLD.observe(viewLifecycleOwner) {
             mainViewModel.saveRemoteData(it)
-            Log.e("AAA", it.home + "\n" + it.link)
             mainViewModel.getLaunchCounter()?.let { counter -> moveToWeb(counter) }
         }
     }
 
-    private fun moveToWeb(counter: Int){
+    private fun moveToWeb(counter: Int) {
         val action = LoadFragmentDirections.actionLoadFragmentToWebFragment(counter)
         findNavController().navigate(action)
     }
